@@ -9,7 +9,7 @@ const resizeProps = hasObserver === true
   ? {}
   : {
       style: 'display:block;position:absolute;top:0;left:0;right:0;bottom:0;height:100%;width:100%;overflow:hidden;pointer-events:none;z-index:-1;',
-      url: 'about: blank'
+      url: '#blank'
     }
 
 export default defineComponent({
@@ -101,7 +101,7 @@ export default defineComponent({
       function onObjLoad () {
         cleanup()
 
-        if (targetEl.contentDocument) {
+        if (targetEl && targetEl.contentDocument) {
           curDocView = targetEl.contentDocument.defaultView
           curDocView.addEventListener('resize', trigger, listenOpts.passive)
         }
@@ -109,12 +109,16 @@ export default defineComponent({
         onResize()
       }
 
-      onMounted(() => {
+      onMounted(async() => {
         targetEl = vm.proxy.$el
         onObjLoad()
       })
 
-      onBeforeUnmount(cleanup)
+     onBeforeUnmount(() => {
+        cleanup()
+      })
+
+
 
       return () => {
         if (canRender.value === true) {
